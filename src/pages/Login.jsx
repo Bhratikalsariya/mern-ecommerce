@@ -66,7 +66,7 @@ function Login() {
         localStorage.setItem("token", response.data.token);
       }
 
-      navigate("/dashboard");
+      navigate("/");
 
     } catch (error) {
 

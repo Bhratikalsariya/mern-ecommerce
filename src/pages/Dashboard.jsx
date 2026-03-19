@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from "react";
 import {
-  AppBar,
-  Toolbar,
   Typography,
   Button,
   Grid,
+  Container,
+  Box,
   Card,
   CardMedia,
-  CardContent,
-  Container,
-  Box
+  CardContent
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import api from "../services/api";
+import Navbar from "./Navbar";
+import { useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 
 function Home() {
 
+  const [categories, setCategory] = useState([]);
   const navigate = useNavigate();
-
-  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     fetchProducts();
@@ -27,43 +25,18 @@ function Home() {
 
   const fetchProducts = async () => {
     try {
-      const res = await api.get("/products");
-      setProducts(res.data);
+      const res = await api.get("/category");
+      setCategory(res.data);
     } catch (error) {
       console.log(error);
     }
   };
-  console.log("pro",products);
-  
+  console.log("categories", categories);
+
   return (
     <>
       {/* Navbar */}
-      <AppBar
-        position="static"
-        sx={{ backgroundColor: "white", boxShadow: "none" }}
-      >
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1,color: "black", fontWeight: "bold" }}>
-            MyShop
-          </Typography>
-
-          <Button onClick={() => navigate('/')} sx={{ color: "black" }}>
-            Home
-          </Button>
-
-          <Button onClick={() => navigate('/products')} sx={{ color: "black" }}>
-            Products
-          </Button>
-
-          <Button onClick={() => navigate('/login')}  sx={{ color: "black" }}>
-            Login
-          </Button>
-
-          <Button onClick={() => navigate('/register')} sx={{ color: "black" }}>
-            Register
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <Navbar />
 
       {/* Hero Section */}
       <Box
@@ -90,71 +63,60 @@ function Home() {
         </Button>
       </Box>
 
-      {/* Products */}
+      {/* Categories */}
       <Container sx={{ py: 5 }}>
 
         <Typography variant="h4" mb={4}>
-          Featured Products
+          Featured Categories
         </Typography>
 
         <Grid container spacing={3}>
 
-          {products.map((product) => (
-            <Grid item xs={12} sm={6} md={3} key={product._id}>
+          {categories.map((category) => {
+            console.log(category);
+            return (
+              <>
+                <Grid item xs={12} sm={6} md={3} key={category._id} width={300} maxHeight={500}>
 
-              <Card>
+                  <Card>
 
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : "/images/no-image.png"}
-                />
+                    <CardContent>
 
-                <CardContent>
+                      <Typography variant="h6">
+                        {category.name}
+                      </Typography>
 
-                  <Typography variant="h6">
-                    {product.name}
-                  </Typography>
+                      <Typography color="text.secondary">
+                        {category.description}
+                      </Typography>
 
-                  <Typography color="text.secondary">
-                    Rs. {product.price}
-                  </Typography>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          mt: 2,
+                          background: "linear-gradient(135deg,#ff6a00,#ee0979)",
+                          color: "white"
+                        }}
+                        fullWidth
+                        onClick={() => navigate(`/products/${category._id}`)}
+                      >
+                        View Products
+                      </Button>
 
-                  <Button
-                    variant="contained"
-                    sx={{
-                      mt: 2,
-                      background: "linear-gradient(135deg,#ff6a00,#ee0979)",
-                      color: "white"
-                    }}
-                    fullWidth
-                  >
-                    Add to Cart
-                  </Button>
+                    </CardContent>
 
-                </CardContent>
+                  </Card>
 
-              </Card>
-
-            </Grid>
-          ))}
+                </Grid>
+              </>
+            );
+          })}
 
         </Grid>
       </Container>
 
       {/* Footer */}
-      <Box
-        sx={{
-          background: "#111",
-          color: "white",
-          textAlign: "center",
-          py: 3
-        }}
-      >
-        <Typography>
-          © 2026 MyShop. All Rights Reserved.
-        </Typography>
-      </Box>
+      <Footer />
     </>
   );
 }
