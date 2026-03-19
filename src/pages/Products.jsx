@@ -74,7 +74,7 @@ function Products() {
 
 
                 {/* ✅ Category Dropdown */}
-                <FormControl sx={{ width: 300 }}>
+                <FormControl sx={{ width: 300, paddingBottom:5 }}>
                     <InputLabel>Select Category</InputLabel>
 
                     <Select
